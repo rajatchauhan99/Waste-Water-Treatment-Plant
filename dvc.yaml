@@ -13,4 +13,11 @@ stages:
     - src/data/feature_engineering.py
     outs:
     - data/features
-    - models
+    - artifacts/scalers
+  model_RF:
+    cmd: python src/models/model_RF.py
+    deps:
+    - data/features
+    - src/models/model_RF.py
+    outs:
+    - artifacts/models_RF

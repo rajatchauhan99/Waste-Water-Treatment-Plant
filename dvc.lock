@@ -28,16 +28,16 @@ stages:
       nfiles: 4
     - path: src/data/feature_engineering.py
       hash: md5
-      md5: 7a2379de0df3daa09af623d99886a2b1
-      size: 2143
+      md5: 560d43fce8233751b1fcb69e6565d733
+      size: 2158
     outs:
+    - path: artifacts/scalers
+      hash: md5
+      md5: fbdd0daf237cab4d4ba431062c231b81.dir
+      size: 1511
+      nfiles: 2
     - path: data/features
       hash: md5
       md5: 34498b9a7a94a181f4ca2cd11ed3ff0e.dir
       size: 55781
       nfiles: 4
-    - path: models
-      hash: md5
-      md5: fbdd0daf237cab4d4ba431062c231b81.dir
-      size: 1511
-      nfiles: 2

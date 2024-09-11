@@ -11,11 +11,11 @@ with open('params.yaml', 'r') as file:
 # Define the folder paths
 train_test_split_folder = r"C:\Users\rajat.chauhan\Downloads\Data science\Waste Water Treatment Plant\data\train_test_split"
 features_folder = r"C:\Users\rajat.chauhan\Downloads\Data science\Waste Water Treatment Plant\data\features"
-models_folder = r"C:\Users\rajat.chauhan\Downloads\Data science\Waste Water Treatment Plant\models"
+scalers_folder = r"C:\Users\rajat.chauhan\Downloads\Data science\Waste Water Treatment Plant\artifacts\scalers"
 
 # Ensure the directories exist
 os.makedirs(features_folder, exist_ok=True)
-os.makedirs(models_folder, exist_ok=True)
+os.makedirs(scalers_folder, exist_ok=True)
 
 # Load the train-test split data
 X_train = pd.read_csv(os.path.join(train_test_split_folder, "X_train.csv"))
@@ -39,8 +39,8 @@ pd.DataFrame(y_train_scaled, columns=["TSS_out_mg_l"]).to_csv(os.path.join(featu
 pd.DataFrame(y_test_scaled, columns=["TSS_out_mg_l"]).to_csv(os.path.join(features_folder, "y_test_scaled.csv"), index=False)
 
 # Save the scalers using pickle
-with open(os.path.join(models_folder, "scaler_X.pkl"), 'wb') as file:
+with open(os.path.join(scalers_folder, "scaler_X.pkl"), 'wb') as file:
     pickle.dump(scaler_X, file)
 
-with open(os.path.join(models_folder, "scaler_y.pkl"), 'wb') as file:
+with open(os.path.join(scalers_folder, "scaler_y.pkl"), 'wb') as file:
     pickle.dump(scaler_y, file)
