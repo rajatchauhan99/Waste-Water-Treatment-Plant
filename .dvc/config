@@ -1,0 +1,4 @@
+[core]
+    remote = myremote
+['remote "myremote"']
+    url = C:\Users\rajat.chauhan\Downloads\Data science\Waste Water Treatment Plant\dvcremote

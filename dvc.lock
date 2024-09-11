@@ -1,0 +1,43 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/data/data_ingestion.py
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: eac01cbdbecb95efde061d9cec0f50ef.dir
+      size: 11520
+      nfiles: 1
+    - path: src/data/data_ingestion.py
+      hash: md5
+      md5: 417cf79e78e89e05c2287af584f5305c
+      size: 1167
+    outs:
+    - path: data/train_test_split
+      hash: md5
+      md5: bd1774c249a439a8d5fe12b4ca4d8a0e.dir
+      size: 11960
+      nfiles: 4
+  feature_engineering:
+    cmd: python src/data/feature_engineering.py
+    deps:
+    - path: data/train_test_split
+      hash: md5
+      md5: bd1774c249a439a8d5fe12b4ca4d8a0e.dir
+      size: 11960
+      nfiles: 4
+    - path: src/data/feature_engineering.py
+      hash: md5
+      md5: 7a2379de0df3daa09af623d99886a2b1
+      size: 2143
+    outs:
+    - path: data/features
+      hash: md5
+      md5: 34498b9a7a94a181f4ca2cd11ed3ff0e.dir
+      size: 55781
+      nfiles: 4
+    - path: models
+      hash: md5
+      md5: fbdd0daf237cab4d4ba431062c231b81.dir
+      size: 1511
+      nfiles: 2
