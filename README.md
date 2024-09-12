@@ -1,6 +1,4 @@
-Here's a `README.md` file for your project:
 
-```markdown
 # Project: Waste Water Treatment Plant Analysis
 
 This project aims to build a predictive model for waste water treatment plants. The project uses various stages of data processing, including data ingestion, feature engineering, and model training using Random Forest (RF). The goal is to track the various runs and experiment results using MLflow, ensuring reproducibility and effective performance tracking.
