@@ -41,3 +41,21 @@ stages:
       md5: 34498b9a7a94a181f4ca2cd11ed3ff0e.dir
       size: 55781
       nfiles: 4
+  model_RF:
+    cmd: python src/models/model_RF.py
+    deps:
+    - path: data/features
+      hash: md5
+      md5: 34498b9a7a94a181f4ca2cd11ed3ff0e.dir
+      size: 55781
+      nfiles: 4
+    - path: src/models/model_RF.py
+      hash: md5
+      md5: 4da6e1e127d006d7be691c3879fc72eb
+      size: 3756
+    outs:
+    - path: artifacts/models_RF
+      hash: md5
+      md5: e09c29d9d60e607a7efecbc0c13786b1.dir
+      size: 3693716
+      nfiles: 1

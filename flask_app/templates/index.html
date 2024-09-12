@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Waste Water Treatment Prediction</title>
+</head>
+<body>
+    <h1>Predict TSS_out_mg_l</h1>
+    <form action="/predict" method="post">
+        <label for="Temp_C">Temp_C:</label><br>
+        <input type="text" name="Temp_C" required><br>
+        
+        <label for="pH">pH:</label><br>
+        <input type="text" name="pH" required><br>
+        
+        <label for="TSS_in_mg_l">TSS_in_mg_l:</label><br>
+        <input type="text" name="TSS_in_mg_l" required><br>
+        
+        <label for="BOD_in_mg_l">BOD_in_mg_l:</label><br>
+        <input type="text" name="BOD_in_mg_l" required><br>
+        
+        <label for="COD_in_mg_l">COD_in_mg_l:</label><br>
+        <input type="text" name="COD_in_mg_l" required><br>
+        
+        <label for="BOD_out_mg_l">BOD_out_mg_l:</label><br>
+        <input type="text" name="BOD_out_mg_l" required><br>
+        
+        <label for="COD_out_mg_l">COD_out_mg_l:</label><br>
+        <input type="text" name="COD_out_mg_l" required><br>
+        
+        <label for="DO_out_mg_l">DO_out_mg_l:</label><br>
+        <input type="text" name="DO_out_mg_l" required><br><br>
+        
+        <input type="submit" value="Predict">
+    </form>
+    
+    {% if prediction_text %}
+        <h2>{{ prediction_text }}</h2>
+    {% endif %}
+</body>
+</html>

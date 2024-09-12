@@ -33,7 +33,7 @@ y_test_scaled = y_test_scaled.values.ravel()
 # Define the RandomForest model
 rf = RandomForestRegressor(random_state=42)
 
-# Define the parameter grid for Grid Search
+# Define the parameter grid for Grid Search with more balanced complexity
 param_grid = {
     'n_estimators': [50, 100, 200],
     'max_depth': [None, 10, 20, 30],
@@ -41,8 +41,15 @@ param_grid = {
     'min_samples_leaf': [1, 2, 4]
 }
 
-# Initialize GridSearchCV
-grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, cv=5, n_jobs=-1, scoring='neg_mean_squared_error')
+# Initialize GridSearchCV with both scoring metrics
+grid_search = GridSearchCV(
+    estimator=rf, 
+    param_grid=param_grid, 
+    cv=5, 
+    n_jobs=-1, 
+    scoring=['neg_mean_squared_error', 'r2'], 
+    refit='neg_mean_squared_error'
+)
 
 # Initialize DagsHub and MLflow
 mlflow.set_tracking_uri("https://dagshub.com/rajatchauhan99/Waste-Water-Treatment-Plant.mlflow")
@@ -51,52 +58,47 @@ dagshub.init(repo_owner='rajatchauhan99', repo_name='Waste-Water-Treatment-Plant
 # Set the experiment name
 mlflow.set_experiment("Random Forest")
 
-# Train GridSearchCV
-grid_search.fit(X_train_scaled, y_train_scaled)
-
-# Iterate through each parameter combination and log results
-for i, (params, mean_score, scores) in enumerate(zip(
-    grid_search.cv_results_['params'],
-    grid_search.cv_results_['mean_test_score'],
-    grid_search.cv_results_['std_test_score']
-)):
-    with mlflow.start_run(run_name=f"Run_{i+1}"):
-        # Log Grid Search parameters
-        mlflow.log_params(params)
-        
-        # Train the model with current parameters
-        best_rf = RandomForestRegressor(random_state=42, **params)
-        best_rf.fit(X_train_scaled, y_train_scaled)
-
-        # Predict and calculate metrics
-        y_train_pred = best_rf.predict(X_train_scaled)
-        y_test_pred = best_rf.predict(X_test_scaled)
-
-        train_mse = mean_squared_error(y_train_scaled, y_train_pred)
-        test_mse = mean_squared_error(y_test_scaled, y_test_pred)
-        train_r2 = r2_score(y_train_scaled, y_train_pred)
-        test_r2 = r2_score(y_test_scaled, y_test_pred)
-
-        # Log metrics
-        mlflow.log_metric("Train Mean Squared Error", train_mse)
-        mlflow.log_metric("Test Mean Squared Error", test_mse)
-        mlflow.log_metric("Train R² Score", train_r2)
-        mlflow.log_metric("Test R² Score", test_r2)
-        mlflow.log_metric("Mean Test Score", mean_score)
-        mlflow.log_metric("Std Test Score", scores)
-
-        # Log the model to DagsHub
-        mlflow.sklearn.log_model(best_rf, "best_rf_model")
-
-        # Save the model locally
-        local_model_path = os.path.join(models_folder, f"best_rf_model_run_{i+1}.pkl")
-        with open(local_model_path, 'wb') as model_file:
-            pickle.dump(best_rf, model_file)
-        mlflow.log_artifact(local_model_path)
-
-        # Optionally, print metrics
-        print(f"Run {i+1}:")
-        print(f"Train Mean Squared Error: {train_mse}")
-        print(f"Test Mean Squared Error: {test_mse}")
-        print(f"Train R² Score: {train_r2}")
-        print(f"Test R² Score: {test_r2}")
+# Start an MLflow run to log metrics and parameters
+with mlflow.start_run():
+    # Train GridSearchCV
+    grid_search.fit(X_train_scaled, y_train_scaled)
+    
+    # Fetch best model and parameters
+    best_rf_model = grid_search.best_estimator_
+    best_params = grid_search.best_params_
+    
+    # Predict on train and test data
+    y_train_pred = best_rf_model.predict(X_train_scaled)
+    y_test_pred = best_rf_model.predict(X_test_scaled)
+    
+    # Evaluate performance on train data
+    mse_train = mean_squared_error(y_train_scaled, y_train_pred)
+    r2_train = r2_score(y_train_scaled, y_train_pred)
+    
+    # Evaluate performance on test data
+    mse_test = mean_squared_error(y_test_scaled, y_test_pred)
+    r2_test = r2_score(y_test_scaled, y_test_pred)
+    
+    # Log model parameters, and performance metrics on both train and test sets
+    mlflow.log_params(best_params)
+    
+    # Logging training metrics
+    mlflow.log_metric('mse_train', mse_train)
+    mlflow.log_metric('r2_train', r2_train)
+    
+    # Logging test metrics
+    mlflow.log_metric('mse_test', mse_test)
+    mlflow.log_metric('r2_test', r2_test)
+    
+    # Save the best model locally
+    model_path = os.path.join(models_folder, "best_rf_model.pkl")
+    with open(model_path, 'wb') as f:
+        pickle.dump(best_rf_model, f)
+    
+    # Log the model to MLflow
+    mlflow.sklearn.log_model(best_rf_model, "random_forest_model")
+    
+    # Output the results
+    print(f"Best Model Parameters: {best_params}")
+    print(f"Train MSE: {mse_train}, Train R2: {r2_train}")
+    print(f"Test MSE: {mse_test}, Test R2: {r2_test}")
