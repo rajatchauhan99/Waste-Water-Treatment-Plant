@@ -1,4 +1,4 @@
 [core]
     remote = myremote
 ['remote "myremote"']
-    url = C:\Users\rajat.chauhan\Downloads\Data science\Waste Water Treatment Plant\dvcremote
+    url = s3://gsperformanceanalytics/Processed/test/
