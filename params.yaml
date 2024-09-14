@@ -1,7 +1,7 @@
 # params.yaml
 # params.yaml
 data_ingestion:
-  test_size: 0.21
+  test_size: 0.19
 
 feature_engineering:
   max_features: 5000

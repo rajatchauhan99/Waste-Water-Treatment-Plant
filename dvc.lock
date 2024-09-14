@@ -10,7 +10,7 @@ stages:
       nfiles: 1
     - path: params.yaml
       hash: md5
-      md5: a41a864e0b1eaa54830c452215489b5b
+      md5: a6dd7df917ecafcdb0922f43f52774c9
       size: 110
     - path: src/data/data_ingestion.py
       hash: md5
@@ -19,7 +19,7 @@ stages:
     outs:
     - path: data/train_test_split
       hash: md5
-      md5: 653cba6d5c112341c78006a47e42778e.dir
+      md5: 82ed9ab5a2cd2cb33dd066b7216bb867.dir
       size: 11960
       nfiles: 4
   feature_engineering:
@@ -27,12 +27,12 @@ stages:
     deps:
     - path: data/train_test_split
       hash: md5
-      md5: 653cba6d5c112341c78006a47e42778e.dir
+      md5: 82ed9ab5a2cd2cb33dd066b7216bb867.dir
       size: 11960
       nfiles: 4
     - path: params.yaml
       hash: md5
-      md5: a41a864e0b1eaa54830c452215489b5b
+      md5: a6dd7df917ecafcdb0922f43f52774c9
       size: 110
     - path: src/data/feature_engineering.py
       hash: md5
@@ -41,12 +41,12 @@ stages:
     outs:
     - path: artifacts/scalers
       hash: md5
-      md5: 3379cb96d77369f4ee035d5db6f4d988.dir
+      md5: 06c5729351720a3ce72fb27d12e21792.dir
       size: 1511
       nfiles: 2
     - path: data/features
       hash: md5
-      md5: b6f62ab56ddd43cacdaab6a63c76703b.dir
+      md5: 7f8394b45f904aff44bdacb24b4764b8.dir
       size: 55781
       nfiles: 4
   model_RF:
@@ -54,16 +54,16 @@ stages:
     deps:
     - path: data/features
       hash: md5
-      md5: b6f62ab56ddd43cacdaab6a63c76703b.dir
+      md5: 7f8394b45f904aff44bdacb24b4764b8.dir
       size: 55781
       nfiles: 4
     - path: src/models/model_RF.py
       hash: md5
-      md5: 4da6e1e127d006d7be691c3879fc72eb
-      size: 3756
+      md5: ca160b8172e8de2df6f77aed4e78743c
+      size: 3865
     outs:
     - path: artifacts/models_RF
       hash: md5
-      md5: ef8c6142d019f603c6150a94720b5a1f.dir
-      size: 3595673
+      md5: 603e9f8e060de74f4b92d9d92055a4d6.dir
+      size: 864344
       nfiles: 1

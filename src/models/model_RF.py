@@ -14,9 +14,12 @@ with open('params.yaml', 'r') as file:
     params = yaml.safe_load(file)
 
 # Define the folder paths in an OS-independent way
-base_dir = os.path.dirname(os.path.abspath(__file__))
+# Define the folder paths in an OS-independent way
+base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # Go up one level from src
+print(base_dir)
 features_folder = os.path.join(base_dir, "data", "features")
 models_folder = os.path.join(base_dir, "artifacts", "models_RF")
+
 
 # Ensure the models folder exists
 os.makedirs(models_folder, exist_ok=True)
