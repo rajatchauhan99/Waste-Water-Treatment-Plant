@@ -4,6 +4,7 @@ stages:
     deps:
     - data/processed
     - src/data/data_ingestion.py
+    - params.yaml
     outs:
     - data/train_test_split
   feature_engineering:
@@ -11,6 +12,7 @@ stages:
     deps:
     - data/train_test_split
     - src/data/feature_engineering.py
+    - params.yaml
     outs:
     - data/features
     - artifacts/scalers
