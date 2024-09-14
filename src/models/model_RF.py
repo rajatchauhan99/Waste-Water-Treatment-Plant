@@ -55,9 +55,19 @@ grid_search = GridSearchCV(
     refit='neg_mean_squared_error'
 )
 
-# Initialize DagsHub and MLflow
-mlflow.set_tracking_uri("https://dagshub.com/rajatchauhan99/Waste-Water-Treatment-Plant.mlflow")
-dagshub.init(repo_owner='rajatchauhan99', repo_name='Waste-Water-Treatment-Plant', mlflow=True)
+dagshub_token = os.getenv("DAGSHUB_PAT")
+if not dagshub_token:
+    raise EnvironmentError("DAGSHUB_PAT environment variable is not set")
+
+os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+
+dagshub_url = "https://dagshub.com"
+repo_owner = 'rajatchauhan99'
+repo_name = 'Waste-Water-Treatment-Plant'
+
+# Set up MLflow tracking URI
+mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
 
 # Set the experiment name
 mlflow.set_experiment("Random Forest")
