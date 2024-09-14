@@ -13,9 +13,10 @@ import pickle  # for saving the model locally
 with open('params.yaml', 'r') as file:
     params = yaml.safe_load(file)
 
-# Define the folder paths
-features_folder = r"C:\Users\rajat.chauhan\Downloads\Data science\Waste Water Treatment Plant\data\features"
-models_folder = r"C:\Users\rajat.chauhan\Downloads\Data science\Waste Water Treatment Plant\artifacts\models_RF"
+# Define the folder paths in an OS-independent way
+base_dir = os.path.dirname(os.path.abspath(__file__))
+features_folder = os.path.join(base_dir, "data", "features")
+models_folder = os.path.join(base_dir, "artifacts", "models_RF")
 
 # Ensure the models folder exists
 os.makedirs(models_folder, exist_ok=True)
@@ -26,14 +27,14 @@ X_test_scaled = pd.read_csv(os.path.join(features_folder, "X_test_scaled.csv"))
 y_train_scaled = pd.read_csv(os.path.join(features_folder, "y_train_scaled.csv"))
 y_test_scaled = pd.read_csv(os.path.join(features_folder, "y_test_scaled.csv"))
 
-# Extract the target column
+# Extract the target column (reshape to 1D array)
 y_train_scaled = y_train_scaled.values.ravel()
 y_test_scaled = y_test_scaled.values.ravel()
 
 # Define the RandomForest model
 rf = RandomForestRegressor(random_state=42)
 
-# Define the parameter grid for Grid Search with more balanced complexity
+# Define the parameter grid for Grid Search
 param_grid = {
     'n_estimators': [50, 100, 200],
     'max_depth': [None, 10, 20, 30],
