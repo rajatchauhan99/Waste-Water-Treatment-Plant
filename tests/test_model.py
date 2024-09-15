@@ -36,11 +36,12 @@ class TestModelLoading(unittest.TestCase):
         cls.X_test_scaled = pd.read_csv(os.path.join(features_folder, "X_test_scaled.csv"))
         cls.y_test_scaled = pd.read_csv(os.path.join(features_folder, "y_test_scaled.csv")).values.ravel()
 
-    @staticmethod
-    def get_latest_model_version(model_name, stage="Staging"):
-        client = mlflow.MlflowClient()
-        latest_version = client.get_latest_versions(model_name, stages=[stage])
-        return latest_version[0].version if latest_version else None
+    @classmethod
+    def get_latest_model_version(cls, model_name):
+        client = mlflow.tracking.MlflowClient()
+        # Retrieve latest model version by filtering without using stages
+        latest_version = client.search_model_versions(f"name='{model_name}'")
+        return latest_version[-1]  # Get the latest version
 
     def test_model_loaded_properly(self):
         """Test that the model is loaded properly from MLflow."""
