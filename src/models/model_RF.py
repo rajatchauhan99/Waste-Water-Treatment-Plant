@@ -8,18 +8,16 @@ from sklearn.metrics import mean_squared_error, r2_score
 import yaml
 import dagshub
 import pickle  # for saving the model locally
+from mlflow.models.signature import infer_signature
 
 # Load parameters from params.yaml
 with open('params.yaml', 'r') as file:
     params = yaml.safe_load(file)
 
 # Define the folder paths in an OS-independent way
-# Define the folder paths in an OS-independent way
 base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # Go up one level from src
-print(base_dir)
 features_folder = os.path.join(base_dir, "data", "features")
 models_folder = os.path.join(base_dir, "artifacts", "models_RF")
-
 
 # Ensure the models folder exists
 os.makedirs(models_folder, exist_ok=True)
@@ -55,6 +53,7 @@ grid_search = GridSearchCV(
     refit='neg_mean_squared_error'
 )
 
+# Set up DAGSHUB credentials for MLflow tracking
 dagshub_token = os.getenv("DAGSHUB_PAT")
 if not dagshub_token:
     raise EnvironmentError("DAGSHUB_PAT environment variable is not set")
@@ -93,24 +92,33 @@ with mlflow.start_run():
     mse_test = mean_squared_error(y_test_scaled, y_test_pred)
     r2_test = r2_score(y_test_scaled, y_test_pred)
     
-    # Log model parameters, and performance metrics on both train and test sets
+    # Log model parameters and performance metrics
     mlflow.log_params(best_params)
-    
-    # Logging training metrics
     mlflow.log_metric('mse_train', mse_train)
     mlflow.log_metric('r2_train', r2_train)
-    
-    # Logging test metrics
     mlflow.log_metric('mse_test', mse_test)
     mlflow.log_metric('r2_test', r2_test)
-    
+
+    # Infer signature (input-output schema) for the model
+    signature = infer_signature(X_train_scaled, y_train_pred)
+
     # Save the best model locally
     model_path = os.path.join(models_folder, "best_rf_model.pkl")
     with open(model_path, 'wb') as f:
         pickle.dump(best_rf_model, f)
     
     # Log the model to MLflow
-    mlflow.sklearn.log_model(best_rf_model, "random_forest_model")
+    mlflow.sklearn.log_model(
+        sk_model=best_rf_model,
+        artifact_path="random_forest_model",
+        signature=signature
+    )
+    
+    # Register the model with the model registry in MLflow
+    mlflow.register_model(
+        model_uri=f"runs:/{mlflow.active_run().info.run_id}/random_forest_model",
+        name="Random Forest Model"
+    )
     
     # Output the results
     print(f"Best Model Parameters: {best_params}")
