@@ -33,3 +33,8 @@ jobs:
          run: |
           dvc repro
 
+       - name: Run tests
+         run: |
+          export DAGSHUB_PAT=${{ secrets.DAGSHUB_PAT }}
+          python -m unittest discover -s tests -p "*.py"
+
